@@ -1,0 +1,15 @@
+Shock delunity=1;
+! annual average rates 2011-2018
+shock  NatMacro("RealHou")  = 5.2;!swap shrBoTnom2 = NatMacro("RealHou") ;  
+shock  NatMacro("RealInv")  = 6.0;!swap invslack   = NatMacro("RealInv") ; 
+shock  NatMacro("RealGov")  = 3.7;!swap fgovgen    = NatMacro("RealGov") ; 
+shock  NatMacro("ExpVol")   = 4.2;!swap natfpexp   = NatMacro("ExpVol") ; 
+shock  NatMacro("AggEmploy")= 2.1;!swap delfwage_o = NatMacro("AggEmploy") ;
+tshock  NatMacro("RealGDP")  = 5.4;!swap bprimnat   = NatMacro("RealGDP") ;
+
+
+
+
+
+
+ 

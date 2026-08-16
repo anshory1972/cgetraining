@@ -1,0 +1,10 @@
+shock delunity=1;
+shock alnd(AGRIC,DST) = uniform -3;
+shock alnd(ONATRES,DST) = uniform -2; 
+shock blab(NonSvc,DST) = uniform -6; 
+shock blab(Services,DST) = uniform -3; 
+shock nhou = uniform 1.5;
+shock emptrend = uniform 2.5;
+shock fqexp = uniform 5.0;
+shock NatMacro("RealGDP")  = 5.2; !swap bprimnat   = NatMacro("RealGDP") ;
+
