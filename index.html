@@ -3,114 +3,366 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CGE Training Materials</title>
+<title>Pelatihan CGE — Bahan Ajar</title>
 <style>
   :root {
-    --bg: #fbfaf8;
-    --panel: #ffffff;
-    --ink: #1c1b19;
-    --muted: #6b675f;
-    --line: #e3ded4;
-    --accent: #8a3324;
+    --paper:      #faf7f0;
+    --paper-2:    #f3eee3;
+    --panel:      #ffffff;
+    --ink:        #1a1917;
+    --ink-soft:   #57534a;
+    --ink-faint:  #8d877b;
+    --rule:       #e2dacb;
+    --terra:      #a8452f;
+    --sage:       #4a6b57;
+    --indigo:     #3d4d6b;
+    --ochre:      #9a7420;
+    --shadow:     rgba(60,50,35,.10);
+    --shadow-lift:rgba(60,50,35,.18);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #171614;
-      --panel: #201f1c;
-      --ink: #ece8e1;
-      --muted: #9a948a;
-      --line: #34322d;
-      --accent: #d98b6a;
+      --paper:     #14130f;
+      --paper-2:   #1b1a15;
+      --panel:     #211f1a;
+      --ink:       #ece7dc;
+      --ink-soft:  #b0a99b;
+      --ink-faint: #837c6e;
+      --rule:      #33302a;
+      --terra:     #e08a6c;
+      --sage:      #8fc0a0;
+      --indigo:    #93a8cc;
+      --ochre:     #d9b356;
+      --shadow:     rgba(0,0,0,.35);
+      --shadow-lift:rgba(0,0,0,.5);
     }
   }
+
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    padding: 3rem 1.25rem 4rem;
-    background: var(--bg);
+    background: var(--paper);
     color: var(--ink);
-    font: 16px/1.6 Georgia, "Times New Roman", serif;
+    font: 16px/1.6 "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 46rem; margin: 0 auto; }
-  header { border-bottom: 2px solid var(--line); padding-bottom: 1.25rem; margin-bottom: 2rem; }
-  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .4rem; letter-spacing: -.01em; }
-  .sub { color: var(--muted); font-size: .95rem; margin: 0; }
-  ol { list-style: none; margin: 0; padding: 0; }
-  li {
+  .sans { font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--paper-2) 0%, var(--paper) 62%);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero svg.art {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .hero .inner {
+    position: relative;
+    max-width: 52rem; margin: 0 auto;
+    padding: 4.5rem 1.5rem 3.2rem;
+  }
+  .eyebrow {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    text-transform: uppercase; letter-spacing: .22em;
+    font-size: .68rem; font-weight: 600;
+    color: var(--terra);
+    margin: 0 0 1rem;
+  }
+  .eyebrow::before {
+    content: ""; display: inline-block;
+    width: 2.1rem; height: 1px; background: var(--terra);
+    vertical-align: .28em; margin-right: .7rem;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    line-height: 1.03;
+    font-weight: 400;
+    letter-spacing: -.02em;
+    margin: 0 0 .9rem;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--terra);
+  }
+  .lede {
+    font-size: 1.12rem;
+    color: var(--ink-soft);
+    max-width: 34rem;
+    margin: 0 0 1.6rem;
+  }
+  .stats {
+    display: flex; flex-wrap: wrap; gap: 2.2rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--rule);
+    max-width: 34rem;
+  }
+  .stat .n {
+    display: block;
+    font-size: 1.75rem; line-height: 1;
+    color: var(--ink);
+  }
+  .stat .l {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .7rem; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- layout ---------- */
+  main { max-width: 52rem; margin: 0 auto; padding: 3.2rem 1.5rem 4rem; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin: 0 0 1.6rem;
+  }
+  .section-head h2 {
+    font-size: 1.05rem; font-weight: 400; margin: 0;
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    text-transform: uppercase; letter-spacing: .18em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .section-head .fill { flex: 1; height: 1px; background: var(--rule); }
+
+  ol.list { list-style: none; margin: 0; padding: 0; }
+
+  .card {
+    position: relative;
     background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 1.1rem 1.25rem;
-    margin-bottom: .85rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 2px var(--shadow);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    overflow: hidden;
   }
-  .title { font-size: 1.12rem; font-weight: 700; margin: 0 0 .2rem; }
-  .title a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--accent); }
-  .title a:hover { color: var(--accent); }
-  .meta { color: var(--muted); font-size: .9rem; margin: 0; }
-  .meta span + span::before { content: " · "; }
-  footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; }
-  footer code { font-family: Consolas, monospace; font-size: .85em; background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: .1em .35em; }
+  .card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--accent, var(--terra));
+    transition: width .18s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px var(--shadow-lift);
+    border-color: var(--accent, var(--terra));
+  }
+  .card:hover::before { width: 6px; }
+  .card a.hit {
+    display: block;
+    padding: 1.15rem 1.5rem 1.2rem 1.7rem;
+    text-decoration: none; color: inherit;
+  }
+  .card .year {
+    position: absolute; right: 1.1rem; top: .75rem;
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: 2.6rem; font-weight: 700; line-height: 1;
+    color: var(--accent, var(--terra));
+    opacity: .13;
+    letter-spacing: -.03em;
+    pointer-events: none;
+  }
+  .card h3 {
+    font-size: 1.22rem; font-weight: 400; margin: 0 0 .3rem;
+    letter-spacing: -.01em;
+  }
+  .card:hover h3 { color: var(--accent, var(--terra)); }
+  .card .place {
+    color: var(--accent, var(--terra));
+    font-style: italic;
+  }
+  .meta {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .78rem; color: var(--ink-faint);
+    letter-spacing: .02em;
+    margin: 0;
+  }
+  .meta span + span::before {
+    content: "·"; margin: 0 .5rem; color: var(--rule);
+  }
+
+  /* ---------- exam callout ---------- */
+  .exam {
+    position: relative; overflow: hidden;
+    display: block; text-decoration: none; color: inherit;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1.5rem 1.7rem 1.6rem;
+    box-shadow: 0 1px 2px var(--shadow);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .exam:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px var(--shadow-lift);
+    border-color: var(--sage);
+  }
+  .exam svg.seal {
+    position: absolute; right: -1.5rem; top: 50%; transform: translateY(-50%);
+    width: 11rem; height: 11rem; opacity: .12; color: var(--sage);
+    pointer-events: none;
+  }
+  .exam h3 {
+    font-size: 1.35rem; font-weight: 400; margin: 0 0 .35rem;
+    max-width: 26rem;
+  }
+  .exam:hover h3 { color: var(--sage); }
+  .exam p.desc { margin: 0 0 .9rem; color: var(--ink-soft); max-width: 27rem; }
+  .pill {
+    display: inline-block;
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    border: 1px solid var(--rule); border-radius: 999px;
+    padding: .28rem .75rem; margin-right: .4rem;
+    color: var(--ink-soft);
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    margin-top: 3rem; padding-top: 1.3rem;
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .8rem; color: var(--ink-faint);
+  }
+  footer code {
+    font-family: Consolas, "SF Mono", monospace; font-size: .92em;
+    background: var(--paper-2); border: 1px solid var(--rule);
+    border-radius: 3px; padding: .1em .4em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .exam { transition: none; }
+  }
+  @media (max-width: 34rem) {
+    .hero .inner { padding-top: 3rem; }
+    .hero svg.art { opacity: .5; }
+    .card .year { display: none; }
+    .card a.hit { padding-right: 1.2rem; }
+    .stats { gap: 1.4rem; }
+    .exam svg.seal { display: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <h1>Pelatihan CGE &mdash; Bahan Ajar</h1>
-  <p class="sub">Tujuh paket pelatihan Computable General Equilibrium, lengkap dengan slide, modul, data dan model.</p>
-</header>
+<div class="hero">
+  <svg class="art" viewBox="0 0 800 420" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <g fill="none" stroke="currentColor" style="color:var(--terra)" stroke-width="1.1" opacity=".30">
+      <path d="M480 70 C 545 240, 600 300, 800 320"/>
+      <path d="M555 70 C 625 250, 690 320, 800 345"/>
+      <path d="M640 70 C 715 265, 762 338, 800 352"/>
+    </g>
+    <g fill="none" stroke="currentColor" style="color:var(--indigo)" stroke-width="1.1" opacity=".26">
+      <path d="M505 87 L 795 410"/>
+      <path d="M452 266 L 662 266" stroke-dasharray="3 6"/>
+      <path d="M662 266 L 662 402" stroke-dasharray="3 6"/>
+    </g>
+    <g fill="currentColor" style="color:var(--terra)" opacity=".55">
+      <circle cx="662" cy="266" r="3.6"/>
+    </g>
+  </svg>
 
-<ol>
-
-  <li>
-    <p class="title"><a href="html/kepri2025.htm">IndoTERM CGE Model Training &mdash; Batam</a></p>
-    <p class="meta"><span>4&ndash;6 November 2025</span><span>Kepulauan Riau</span><span>36 berkas</span></p>
-  </li>
-
-  <li>
-    <p class="title"><a href="html/cge_bappenas.htm">IndoTERM CGE Model Training Batch 2 &mdash; Bappenas</a></p>
-    <p class="meta"><span>5&ndash;6 September 2024</span><span>46 berkas</span></p>
-  </li>
-
-  <li>
-    <p class="title"><a href="html/cgebkfd.htm">Pelatihan CGE Dynamic &mdash; BKF&ndash;ADB</a></p>
-    <p class="meta"><span>17&ndash;19 Maret 2021</span><span>23 berkas</span></p>
-  </li>
-
-  <li>
-    <p class="title"><a href="html/cgebkf.htm">Pelatihan CGE &mdash; BKF&ndash;ADB</a></p>
-    <p class="meta"><span>1&ndash;3 Desember 2020</span><span>27 berkas</span></p>
-  </li>
-
-  <li>
-    <p class="title"><a href="html/bikalsel.htm">Pelatihan CGE Bank Indonesia &mdash; Kalimantan Selatan</a></p>
-    <p class="meta"><span>22&ndash;24 Juli 2020</span><span>46 berkas</span></p>
-  </li>
-
-  <li>
-    <p class="title"><a href="html/bimakasar.htm">Pelatihan CGE Bank Indonesia &mdash; Makassar</a></p>
-    <p class="meta"><span>2020</span><span>19 berkas</span></p>
-  </li>
-
-  <li>
-    <p class="title"><a href="html/biyogya.htm">Pelatihan CGE Bank Indonesia &mdash; Yogyakarta</a></p>
-    <p class="meta"><span>9&ndash;14 Maret 2020</span><span>41 berkas</span></p>
-  </li>
-
-</ol>
-
-<h2 style="font-size:1.2rem; margin:2.2rem 0 .85rem;">Ujian</h2>
-<ol>
-  <li>
-    <p class="title"><a href="html/exam-micro.htm">Reading Check &mdash; Micro-foundations for CGE Modeling</a></p>
-    <p class="meta"><span>15 soal pilihan ganda</span><span>20 menit</span><span>dinilai otomatis</span></p>
-  </li>
-</ol>
-
-<footer>
-  Seluruh bahan yang dapat diunduh tersimpan di folder <code>materials</code>; halaman pelatihan berada di <code>html</code>.
-</footer>
-
+  <div class="inner">
+    <p class="eyebrow">CEDS &middot; Universitas Padjadjaran</p>
+    <h1>Pelatihan <em>CGE</em><br>Bahan Ajar</h1>
+    <p class="lede">Tujuh paket pelatihan <span class="sans" style="font-size:.95em">Computable General Equilibrium</span> — slide, modul, data, dan model, dari teori dua sektor sampai IndoTERM dinamis.</p>
+    <div class="stats">
+      <div class="stat"><span class="n">7</span><span class="l">Pelatihan</span></div>
+      <div class="stat"><span class="n">2020&ndash;2025</span><span class="l">Periode</span></div>
+      <div class="stat"><span class="n">130+</span><span class="l">Berkas</span></div>
+    </div>
+  </div>
 </div>
+
+<main>
+
+  <div class="section-head">
+    <h2>Pelatihan</h2><div class="fill"></div>
+  </div>
+
+  <ol class="list">
+
+    <li class="card" style="--accent: var(--terra)">
+      <a class="hit" href="html/kepri2025.htm">
+        <span class="year">2025</span>
+        <h3>IndoTERM CGE Model Training <span class="place">— Batam</span></h3>
+        <p class="meta"><span>4&ndash;6 November 2025</span><span>Kepulauan Riau</span><span>36 berkas</span></p>
+      </a>
+    </li>
+
+    <li class="card" style="--accent: var(--indigo)">
+      <a class="hit" href="html/cge_bappenas.htm">
+        <span class="year">2024</span>
+        <h3>IndoTERM CGE Model Training Batch 2 <span class="place">— Bappenas</span></h3>
+        <p class="meta"><span>5&ndash;6 September 2024</span><span>46 berkas</span></p>
+      </a>
+    </li>
+
+    <li class="card" style="--accent: var(--sage)">
+      <a class="hit" href="html/cgebkfd.htm">
+        <span class="year">2021</span>
+        <h3>Pelatihan CGE Dynamic <span class="place">— BKF&ndash;ADB</span></h3>
+        <p class="meta"><span>17&ndash;19 Maret 2021</span><span>23 berkas</span></p>
+      </a>
+    </li>
+
+    <li class="card" style="--accent: var(--ochre)">
+      <a class="hit" href="html/cgebkf.htm">
+        <span class="year">2020</span>
+        <h3>Pelatihan CGE <span class="place">— BKF&ndash;ADB</span></h3>
+        <p class="meta"><span>1&ndash;3 Desember 2020</span><span>27 berkas</span></p>
+      </a>
+    </li>
+
+    <li class="card" style="--accent: var(--terra)">
+      <a class="hit" href="html/bikalsel.htm">
+        <span class="year">2020</span>
+        <h3>Pelatihan CGE Bank Indonesia <span class="place">— Kalimantan Selatan</span></h3>
+        <p class="meta"><span>22&ndash;24 Juli 2020</span><span>46 berkas</span></p>
+      </a>
+    </li>
+
+    <li class="card" style="--accent: var(--indigo)">
+      <a class="hit" href="html/bimakasar.htm">
+        <span class="year">2020</span>
+        <h3>Pelatihan CGE Bank Indonesia <span class="place">— Makassar</span></h3>
+        <p class="meta"><span>2020</span><span>19 berkas</span></p>
+      </a>
+    </li>
+
+    <li class="card" style="--accent: var(--sage)">
+      <a class="hit" href="html/biyogya.htm">
+        <span class="year">2020</span>
+        <h3>Pelatihan CGE Bank Indonesia <span class="place">— Yogyakarta</span></h3>
+        <p class="meta"><span>9&ndash;14 Maret 2020</span><span>41 berkas</span></p>
+      </a>
+    </li>
+
+  </ol>
+
+  <div class="section-head" style="margin-top:2.8rem">
+    <h2>Ujian</h2><div class="fill"></div>
+  </div>
+
+  <a class="exam" href="html/exam-micro.htm">
+    <svg class="seal" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="0.8"/>
+      <path d="M28 26 C 42 55, 52 66, 78 72" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M28 38 L 76 84" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4"/>
+      <circle cx="48.5" cy="57.6" r="2.6" fill="currentColor" stroke="none"/>
+    </svg>
+    <h3>Reading Check — Micro-foundations for CGE Modeling</h3>
+    <p class="desc">Fungsi CES, teori produksi dan konsumsi, sistem permintaan LES. Dinilai otomatis dengan pembahasan tiap soal.</p>
+    <span class="pill">15 soal</span><span class="pill">20 menit</span><span class="pill">pilihan ganda</span>
+  </a>
+
+  <footer>
+    Seluruh bahan yang dapat diunduh tersimpan di folder <code>materials</code>; halaman pelatihan berada di <code>html</code>.
+  </footer>
+
+</main>
+
 </body>
 </html>

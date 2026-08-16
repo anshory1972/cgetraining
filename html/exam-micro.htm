@@ -3,305 +3,554 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Exam — Micro-foundations for CGE Modeling</title>
+<title>Reading Check — Micro-foundations for CGE Modeling</title>
 <style>
   :root {
-    --bg: #fbfaf8;
-    --panel: #ffffff;
-    --ink: #1c1b19;
-    --muted: #6b675f;
-    --line: #e3ded4;
-    --accent: #8a3324;
-    --good: #1e7a3c;
-    --good-bg: #e9f5ec;
-    --bad: #b3362a;
-    --bad-bg: #faeceb;
-    --warn-bg: #fdf6e3;
+    --paper:      #faf7f0;
+    --paper-2:    #f3eee3;
+    --panel:      #ffffff;
+    --ink:        #1a1917;
+    --ink-soft:   #57534a;
+    --ink-faint:  #8d877b;
+    --rule:       #e2dacb;
+    --terra:      #a8452f;
+    --sage:       #4a6b57;
+    --indigo:     #3d4d6b;
+    --good:       #2f7d4f;
+    --good-bg:    #eef6f0;
+    --bad:        #b3362a;
+    --bad-bg:     #fbefed;
+    --warn-bg:    #fdf7e8;
+    --shadow:     rgba(60,50,35,.10);
+    --shadow-lift:rgba(60,50,35,.18);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #171614;
-      --panel: #201f1c;
-      --ink: #ece8e1;
-      --muted: #9a948a;
-      --line: #34322d;
-      --accent: #d98b6a;
-      --good: #6fbf8a;
-      --good-bg: #1d2b21;
-      --bad: #e08a80;
-      --bad-bg: #2f1f1d;
-      --warn-bg: #2b271c;
+      --paper:     #14130f;
+      --paper-2:   #1b1a15;
+      --panel:     #211f1a;
+      --ink:       #ece7dc;
+      --ink-soft:  #b0a99b;
+      --ink-faint: #837c6e;
+      --rule:      #33302a;
+      --terra:     #e08a6c;
+      --sage:      #8fc0a0;
+      --indigo:    #93a8cc;
+      --good:      #78c295;
+      --good-bg:   #1a2820;
+      --bad:       #e58c81;
+      --bad-bg:    #2c1d1b;
+      --warn-bg:   #2a2519;
+      --shadow:     rgba(0,0,0,.35);
+      --shadow-lift:rgba(0,0,0,.5);
     }
   }
+
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    padding: 2.5rem 1.25rem 4rem;
-    background: var(--bg);
+    background: var(--paper);
     color: var(--ink);
-    font: 16px/1.55 Georgia, "Times New Roman", serif;
+    font: 16px/1.65 "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 46rem; margin: 0 auto; }
-  header { border-bottom: 2px solid var(--line); padding-bottom: 1.1rem; margin-bottom: 1.6rem; }
-  h1 { font-size: 1.65rem; line-height: 1.25; margin: 0 0 .4rem; }
-  .sub { color: var(--muted); font-size: .95rem; margin: .15rem 0; }
+  .sans { font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif; }
+
+  math { font-size: 1.06em; max-width: 100%; }
+  math[display="block"] {
+    display: block; margin: .7rem 0;
+    overflow-x: auto; overflow-y: hidden;
+    padding-bottom: .15rem;
+  }
+  /* an oversized formula scrolls inside its own box, never widens the page */
+  .qtext, .expl { overflow-x: auto; overflow-y: hidden; }
+  label.opt > span:not(.box):not(.tick) { min-width: 0; overflow-x: auto; overflow-y: hidden; }
+
+  /* ---------- fixed chrome ---------- */
+  #progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--rule); z-index: 20;
+  }
+  #progress b {
+    display: block; height: 100%; width: 0;
+    background: var(--terra);
+    transition: width .25s ease;
+  }
   #timer {
-    position: fixed; top: .9rem; right: .9rem; z-index: 10;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
-    padding: .35rem .9rem; font-size: 1.05rem; font-weight: 700;
-    font-family: Consolas, monospace; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    position: fixed; top: .8rem; right: .8rem; z-index: 21;
+    background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 999px;
+    padding: .4rem 1rem .4rem .9rem;
+    box-shadow: 0 2px 10px var(--shadow);
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .95rem; font-weight: 600; letter-spacing: .04em;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  #timer .dot {
+    width: .45rem; height: .45rem; border-radius: 50%;
+    background: var(--sage);
   }
   #timer.low { color: var(--bad); border-color: var(--bad); }
+  #timer.low .dot { background: var(--bad); animation: pulse 1.1s ease-in-out infinite; }
+  #timer.done .dot { background: var(--ink-faint); }
+  @keyframes pulse { 50% { opacity: .25; } }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(160deg, var(--paper-2) 0%, var(--paper) 62%);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero svg.art { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero .inner { position: relative; max-width: 46rem; margin: 0 auto; padding: 3.2rem 1.5rem 2.4rem; }
+  .eyebrow {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    text-transform: uppercase; letter-spacing: .22em;
+    font-size: .66rem; font-weight: 600; color: var(--terra); margin: 0 0 .9rem;
+  }
+  .eyebrow::before {
+    content: ""; display: inline-block; width: 2rem; height: 1px;
+    background: var(--terra); vertical-align: .28em; margin-right: .7rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 5.5vw, 3rem); line-height: 1.06;
+    font-weight: 400; letter-spacing: -.02em; margin: 0 0 .8rem;
+  }
+  h1 em { font-style: italic; color: var(--terra); }
+  .sources {
+    color: var(--ink-soft); max-width: 34rem; margin: 0 0 1.3rem; font-size: 1.02rem;
+  }
+  .sources cite { font-style: italic; }
+  .rules {
+    display: flex; flex-wrap: wrap; gap: .5rem;
+    padding-top: 1.1rem; border-top: 1px solid var(--rule);
+  }
+  .pill {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    border: 1px solid var(--rule); border-radius: 999px;
+    padding: .3rem .8rem; color: var(--ink-soft);
+  }
+
+  main { max-width: 46rem; margin: 0 auto; padding: 2.4rem 1.5rem 4rem; }
+
+  /* ---------- result panel ---------- */
   #result {
     display: none;
-    border: 1px solid var(--line); border-left: 5px solid var(--accent);
-    background: var(--panel); border-radius: 6px;
-    padding: 1rem 1.25rem; margin-bottom: 1.6rem;
+    background: var(--panel); border: 1px solid var(--rule);
+    border-radius: 3px; box-shadow: 0 8px 26px var(--shadow);
+    padding: 1.5rem 1.6rem; margin-bottom: 2rem;
+    align-items: center; gap: 1.5rem;
   }
-  #result .score { font-size: 1.5rem; font-weight: 700; }
-  #result p { margin: .3rem 0 0; color: var(--muted); }
-  fieldset.q {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
-    padding: 1rem 1.25rem 1.1rem; margin: 0 0 1.1rem;
+  #result.show { display: flex; }
+  #result .ring { flex: 0 0 auto; }
+  #result .ring circle.bg { stroke: var(--rule); }
+  #result .ring circle.fg {
+    stroke: var(--terra); stroke-linecap: round;
+    transform: rotate(-90deg); transform-origin: 50% 50%;
+    transition: stroke-dashoffset .9s cubic-bezier(.2,.7,.3,1);
   }
-  fieldset.q.correct   { border-color: var(--good); background: var(--good-bg); }
-  fieldset.q.incorrect { border-color: var(--bad);  background: var(--bad-bg); }
-  fieldset.q.unanswered{ border-color: var(--bad);  background: var(--warn-bg); }
-  legend {
-    font-weight: 700; padding: 0 .4rem; font-size: 1rem;
+  #result .ring text.num {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: 26px; font-weight: 700; fill: var(--ink);
   }
-  .qtext { margin: .2rem 0 .7rem; }
+  #result .ring text.den {
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: 11px; fill: var(--ink-faint); letter-spacing: .1em;
+  }
+  #result h2 { font-size: 1.35rem; font-weight: 400; margin: 0 0 .25rem; }
+  #result p { margin: 0; color: var(--ink-soft); font-size: .96rem; }
+
+  /* ---------- questions ---------- */
+  .q {
+    position: relative;
+    background: var(--panel); border: 1px solid var(--rule);
+    border-radius: 3px; box-shadow: 0 1px 2px var(--shadow);
+    padding: 1.3rem 1.5rem 1.4rem 3.6rem;
+    margin: 0 0 1.1rem;
+    transition: border-color .18s ease, background .18s ease;
+  }
+  .q .num {
+    position: absolute; left: 1.15rem; top: 1.3rem;
+    width: 1.7rem; height: 1.7rem; border-radius: 50%;
+    border: 1px solid var(--rule); background: var(--paper-2);
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .8rem; font-weight: 600; color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .q.answered .num { border-color: var(--terra); color: var(--terra); }
+  .q.correct   { border-color: var(--good); background: var(--good-bg); }
+  .q.incorrect { border-color: var(--bad);  background: var(--bad-bg); }
+  .q.unanswered{ border-color: var(--bad);  background: var(--warn-bg); }
+  .q.correct   .num { border-color: var(--good); background: var(--good); color: #fff; }
+  .q.incorrect .num, .q.unanswered .num { border-color: var(--bad); background: var(--bad); color: #fff; }
+
+  .qtext { margin: .1rem 0 .9rem; }
+
   label.opt {
-    display: block; padding: .3rem .5rem .3rem 2rem; text-indent: -1.55rem;
-    border-radius: 4px; cursor: pointer;
+    display: flex; align-items: baseline; gap: .7rem;
+    padding: .42rem .6rem; margin: 0 -.6rem;
+    border-radius: 3px; cursor: pointer;
+    transition: background .12s ease;
   }
-  label.opt:hover { background: rgba(128,128,128,.08); }
-  label.opt input { margin-right: .55rem; }
-  label.opt.right { outline: 2px solid var(--good); background: rgba(30,122,60,.08); }
-  label.opt.chosen-wrong { outline: 2px solid var(--bad); }
-  .expl {
-    display: none; margin: .7rem 0 0; padding: .55rem .8rem;
-    border-left: 3px solid var(--accent); background: rgba(128,128,128,.06);
-    font-size: .92rem;
+  label.opt:hover { background: rgba(128,128,128,.07); }
+  label.opt input { position: absolute; opacity: 0; pointer-events: none; }
+  label.opt .box {
+    flex: 0 0 auto; position: relative; top: .18em;
+    width: .95rem; height: .95rem; border-radius: 50%;
+    border: 1.5px solid var(--ink-faint); background: transparent;
+    transition: border-color .12s ease;
   }
-  .expl .src { color: var(--muted); font-style: italic; }
-  .flag { display: none; color: var(--bad); font-weight: 700; font-size: .9rem; margin: .5rem 0 0; }
-  .graded .expl, .graded .flag.show { display: block; }
-  #submitrow { margin: 1.8rem 0 0; text-align: center; }
+  label.opt input:checked + .box { border-color: var(--terra); border-width: 5px; }
+  label.opt.right  { background: rgba(47,125,79,.10); }
+  label.opt.right .box { border-color: var(--good); }
+  label.opt.chosen-wrong { background: rgba(179,54,42,.10); }
+  label.opt.chosen-wrong .box { border-color: var(--bad); }
+  label.opt .tick {
+    margin-left: auto; font-family: "Avenir Next", Corbel, system-ui, sans-serif;
+    font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+    opacity: 0; white-space: nowrap; padding-left: .8rem;
+  }
+  label.opt.right .tick { opacity: 1; color: var(--good); }
+  label.opt.chosen-wrong .tick { opacity: 1; color: var(--bad); }
+
+  .expl, .flag { display: none; }
+  .graded .expl {
+    display: block;
+    margin: 1rem -.2rem 0; padding: .7rem .95rem;
+    background: var(--paper-2); border-left: 2px solid var(--terra);
+    border-radius: 0 3px 3px 0; font-size: .94rem;
+  }
+  .graded .flag.show {
+    display: block; margin: .8rem 0 0;
+    font-family: "Avenir Next", Corbel, system-ui, sans-serif;
+    font-size: .78rem; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--bad); font-weight: 600;
+  }
+  .expl .src {
+    display: block; margin-top: .35rem;
+    font-family: "Avenir Next", Corbel, system-ui, sans-serif;
+    font-size: .74rem; color: var(--ink-faint); letter-spacing: .02em;
+  }
+
+  #submitrow { margin: 2.2rem 0 0; text-align: center; }
   #submitbtn {
-    font: inherit; font-weight: 700; color: #fff; background: var(--accent);
-    border: 0; border-radius: 6px; padding: .7rem 2.2rem; cursor: pointer;
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .82rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--paper); background: var(--ink);
+    border: 0; border-radius: 999px; padding: .85rem 2.6rem; cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
   }
-  #submitbtn:disabled { opacity: .5; cursor: default; }
-  var { font-style: italic; font-family: Georgia, serif; }
-  sub, sup { line-height: 0; }
+  #submitbtn:hover:not(:disabled) { background: var(--terra); transform: translateY(-1px); }
+  #submitbtn:disabled { opacity: .4; cursor: default; }
+  #counter {
+    margin: .8rem 0 0; font-family: "Avenir Next", Corbel, system-ui, sans-serif;
+    font-size: .78rem; color: var(--ink-faint); letter-spacing: .04em;
+  }
+
+  footer {
+    max-width: 46rem; margin: 0 auto; padding: 0 1.5rem 3rem;
+    font-family: "Avenir Next", Corbel, "Segoe UI", system-ui, sans-serif;
+    font-size: .8rem; color: var(--ink-faint);
+  }
+  footer a { color: var(--terra); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  footer a:hover { border-color: var(--terra); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+  @media (max-width: 34rem) {
+    .hero .inner { padding-top: 2.6rem; }
+    .hero svg.art { opacity: .5; }
+    .q { padding: 1.2rem 1.1rem 1.3rem 1.1rem; }
+    .q .num { position: static; margin-bottom: .7rem; }
+    #result { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<div id="timer">20:00</div>
+<div id="progress"><b id="progressbar"></b></div>
+<div id="timer"><span class="dot"></span><span id="clock">20:00</span></div>
 
-<header>
-  <h1>Micro-foundations for CGE Modeling &mdash; Reading Check</h1>
-  <p class="sub">Materials covered: <em>Review of CES functions</em>, <em>Production theory for CGE modeling</em>, <em>Consumption theory for CGE modeling</em>, Handout&nbsp;#1 (CES demand for inputs), Handout&nbsp;#2 (LES demand system).</p>
-  <p class="sub">15 multiple-choice questions &middot; 20 minutes &middot; one answer per question. The exam is scored automatically when you press <strong>Submit</strong> or when time runs out.</p>
-</header>
+<div class="hero">
+  <svg class="art" viewBox="0 0 800 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <g fill="none" stroke="currentColor" style="color:var(--terra)" stroke-width="1.1" opacity=".28">
+      <path d="M480 50 C 545 171, 600 214, 800 229"/>
+      <path d="M555 50 C 625 178, 690 228, 800 246"/>
+      <path d="M640 50 C 715 189, 762 241, 800 251"/>
+    </g>
+    <g fill="none" stroke="currentColor" style="color:var(--indigo)" stroke-width="1.1" opacity=".24">
+      <path d="M505 62 L 795 293"/>
+      <path d="M452 190 L 662 190" stroke-dasharray="3 6"/>
+      <path d="M662 190 L 662 288" stroke-dasharray="3 6"/>
+    </g>
+    <circle cx="662" cy="190" r="3.6" fill="currentColor" style="color:var(--terra)" opacity=".55"/>
+  </svg>
+
+  <div class="inner">
+    <p class="eyebrow">CEDS &middot; Universitas Padjadjaran</p>
+    <h1>Reading Check<br><em>Micro-foundations for CGE Modeling</em></h1>
+    <p class="sources">Covering <cite>Review of CES functions</cite>, <cite>Production theory for CGE modeling</cite>, <cite>Consumption theory for CGE modeling</cite>, and Handouts&nbsp;#1&ndash;#2 on CES input demand and the LES demand system.</p>
+    <div class="rules">
+      <span class="pill">15 questions</span>
+      <span class="pill">20 minutes</span>
+      <span class="pill">one answer each</span>
+      <span class="pill">auto-scored</span>
+    </div>
+  </div>
+</div>
+
+<main>
 
 <div id="result">
-  <div class="score"></div>
-  <p class="verdict"></p>
+  <svg class="ring" width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+    <circle class="bg" cx="48" cy="48" r="40" fill="none" stroke-width="6"/>
+    <circle class="fg" id="ringfg" cx="48" cy="48" r="40" fill="none" stroke-width="6"
+            stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+    <text class="num" id="ringnum" x="48" y="48" text-anchor="middle" dominant-baseline="central">0</text>
+    <text class="den" x="48" y="68" text-anchor="middle">OF 15</text>
+  </svg>
+  <div>
+    <h2 id="verdict-title">&nbsp;</h2>
+    <p id="verdict-text">&nbsp;</p>
+  </div>
 </div>
 
 <form id="exam" onsubmit="return false;">
 
-<fieldset class="q" id="q1">
-  <legend>Question 1</legend>
-  <p class="qtext">In the CES production function <var>Q</var> = {&Sigma;<sub><var>i</var></sub> &delta;<sub><var>i</var></sub><var>X</var><sub><var>i</var></sub><sup>&minus;&rho;</sup>}<sup>&minus;1/&rho;</sup>, the elasticity of substitution &sigma; is:</p>
-  <label class="opt"><input type="radio" name="q1" value="a"> &sigma; = 1 + &rho;</label>
-  <label class="opt"><input type="radio" name="q1" value="b"> &sigma; = 1 / (1 + &rho;)</label>
-  <label class="opt"><input type="radio" name="q1" value="c"> &sigma; = 1 / (1 &minus; &rho;)</label>
-  <label class="opt"><input type="radio" name="q1" value="d"> &sigma; = &rho; / (1 + &rho;)</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">&sigma; = 1/(1+&rho;), so with &minus;1 &lt; &rho; &lt; &infin; we get 0 &lt; &sigma; &lt; &infin;. <span class="src">CES slides, "Elasticity of substitution"; Handout #1, eq. (8).</span></div>
-</fieldset>
+<section class="q" id="q1">
+  <div class="num">1</div>
+  <p class="qtext">In the CES production function
+    <math><mi>Q</mi><mo>=</mo><msup><mrow><mo>{</mo><munder><mo>&#8721;</mo><mi>i</mi></munder><msub><mi>&#948;</mi><mi>i</mi></msub><msubsup><mi>X</mi><mi>i</mi><mrow><mo>&#8722;</mo><mi>&#961;</mi></mrow></msubsup><mo>}</mo></mrow><mrow><mo>&#8722;</mo><mfrac><mn>1</mn><mi>&#961;</mi></mfrac></mrow></msup></math>,
+    the elasticity of substitution <math><mi>&#963;</mi></math> is:</p>
+  <label class="opt"><input type="radio" name="q1" value="a"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mn>1</mn><mo>+</mo><mi>&#961;</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q1" value="b"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>&#961;</mi></mrow></mfrac></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q1" value="c"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>&#8722;</mo><mi>&#961;</mi></mrow></mfrac></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q1" value="d"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mfrac><mi>&#961;</mi><mrow><mn>1</mn><mo>+</mo><mi>&#961;</mi></mrow></mfrac></math></span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">With <math><mi>&#963;</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>&#961;</mi></mrow></mfrac></math> and <math><mo>&#8722;</mo><mn>1</mn><mo>&lt;</mo><mi>&#961;</mi><mo>&lt;</mo><mi>&#8734;</mi></math>, the admissible range is <math><mn>0</mn><mo>&lt;</mo><mi>&#963;</mi><mo>&lt;</mo><mi>&#8734;</mi></math>.
+    <span class="src">CES slides, “Elasticity of substitution”; Handout #1, eq. (8).</span></div>
+</section>
 
-<fieldset class="q" id="q2">
-  <legend>Question 2</legend>
+<section class="q" id="q2">
+  <div class="num">2</div>
   <p class="qtext">Which special case of the CES production function is matched <strong>correctly</strong>?</p>
-  <label class="opt"><input type="radio" name="q2" value="a"> &sigma; = 0 &rarr; linear (perfect substitutes)</label>
-  <label class="opt"><input type="radio" name="q2" value="b"> &sigma; = &infin; &rarr; Leontief</label>
-  <label class="opt"><input type="radio" name="q2" value="c"> &sigma; = 1 &rarr; Cobb-Douglas</label>
-  <label class="opt"><input type="radio" name="q2" value="d"> &sigma; = 1 &rarr; Leontief</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">Cobb-Douglas is the CES limit at &sigma; = 1; Leontief at &sigma; = 0; the linear (perfect-substitutes) function at &sigma; = &infin;. <span class="src">"Special cases of CES production function" slide.</span></div>
-</fieldset>
+  <label class="opt"><input type="radio" name="q2" value="a"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mn>0</mn></math> &rarr; linear (perfect substitutes)</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q2" value="b"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mi>&#8734;</mi></math> &rarr; Leontief</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q2" value="c"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mn>1</mn></math> &rarr; Cobb-Douglas</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q2" value="d"><span class="box"></span><span><math><mi>&#963;</mi><mo>=</mo><mn>1</mn></math> &rarr; Leontief</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">Cobb-Douglas is the CES limit at <math><mi>&#963;</mi><mo>=</mo><mn>1</mn></math>; Leontief at <math><mi>&#963;</mi><mo>=</mo><mn>0</mn></math>; the linear (perfect-substitutes) function at <math><mi>&#963;</mi><mo>=</mo><mi>&#8734;</mi></math>.
+    <span class="src">“Special cases of CES production function” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q3">
-  <legend>Question 3</legend>
-  <p class="qtext">A firm has CES technology with &sigma; = 0.5. If the factor-price ratio <var>w</var>/<var>r</var> rises by 2 percent, the factor intensity <var>K</var>/<var>L</var> will:</p>
-  <label class="opt"><input type="radio" name="q3" value="a"> rise by 1 percent</label>
-  <label class="opt"><input type="radio" name="q3" value="b"> rise by 2 percent</label>
-  <label class="opt"><input type="radio" name="q3" value="c"> rise by 4 percent</label>
-  <label class="opt"><input type="radio" name="q3" value="d"> fall by 1 percent</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl"><var>K</var>/<var>L</var> = (&delta;<sub>K</sub>&nbsp;<var>w</var> / &delta;<sub>L</sub>&nbsp;<var>r</var>)<sup>&sigma;</sup>: a 1% rise in the price ratio raises intensity by &sigma;%, so 2% &times; 0.5 = 1%. <span class="src">"Factor intensity and factor price ratio" slide.</span></div>
-</fieldset>
+<section class="q" id="q3">
+  <div class="num">3</div>
+  <p class="qtext">A firm has CES technology with <math><mi>&#963;</mi><mo>=</mo><mn>0.5</mn></math>. If the factor-price ratio <math><mi>w</mi><mo>/</mo><mi>r</mi></math> rises by 2 percent, the factor intensity <math><mi>K</mi><mo>/</mo><mi>L</mi></math> will:</p>
+  <label class="opt"><input type="radio" name="q3" value="a"><span class="box"></span><span>rise by 1 percent</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q3" value="b"><span class="box"></span><span>rise by 2 percent</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q3" value="c"><span class="box"></span><span>rise by 4 percent</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q3" value="d"><span class="box"></span><span>fall by 1 percent</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">Since
+    <math display="block"><mfrac><mi>K</mi><mi>L</mi></mfrac><mo>=</mo><msup><mrow><mo>(</mo><mfrac><msub><mi>&#948;</mi><mi>K</mi></msub><msub><mi>&#948;</mi><mi>L</mi></msub></mfrac><mfrac><mi>w</mi><mi>r</mi></mfrac><mo>)</mo></mrow><mi>&#963;</mi></msup></math>
+    a 1&#8239;% rise in the price ratio raises intensity by <math><mi>&#963;</mi></math>&#8239;%, so <math><mn>2</mn><mo>&#215;</mo><mn>0.5</mn><mo>=</mo><mn>1</mn></math>&#8239;%.
+    <span class="src">“Factor intensity and factor price ratio” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q4">
-  <legend>Question 4</legend>
-  <p class="qtext">Under Leontief technology the cost-minimizing input demand is <var>X</var><sub><var>i</var></sub> = <var>A</var><sub><var>i</var></sub><var>Q</var>. Why does it not respond to input prices?</p>
-  <label class="opt"><input type="radio" name="q4" value="a"> Because input prices are held fixed in CGE models</label>
-  <label class="opt"><input type="radio" name="q4" value="b"> Because the isoquants are L-shaped, so no substitution between inputs is possible (&sigma; = 0)</label>
-  <label class="opt"><input type="radio" name="q4" value="c"> Because returns to scale are constant</label>
-  <label class="opt"><input type="radio" name="q4" value="d"> Because the inputs are perfect substitutes</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">With right-angle isoquants the optimum is always at the kink, whatever the isocost slope: &sigma; = 0. CRS explains proportionality to <var>Q</var>, not price independence. <span class="src">"Leontief production function is input-price independent" slide.</span></div>
-</fieldset>
+<section class="q" id="q4">
+  <div class="num">4</div>
+  <p class="qtext">Under Leontief technology the cost-minimizing input demand is <math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><msub><mi>A</mi><mi>i</mi></msub><mi>Q</mi></math>. Why does it not respond to input prices?</p>
+  <label class="opt"><input type="radio" name="q4" value="a"><span class="box"></span><span>Because input prices are held fixed in CGE models</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q4" value="b"><span class="box"></span><span>Because the isoquants are L-shaped, so no substitution between inputs is possible (<math><mi>&#963;</mi><mo>=</mo><mn>0</mn></math>)</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q4" value="c"><span class="box"></span><span>Because returns to scale are constant</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q4" value="d"><span class="box"></span><span>Because the inputs are perfect substitutes</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">With right-angle isoquants the optimum sits at the kink whatever the isocost slope. Constant returns explain proportionality to <math><mi>Q</mi></math>, not price independence.
+    <span class="src">“Leontief production function is input-price independent” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q5">
-  <legend>Question 5</legend>
-  <p class="qtext">Cost minimization with CES technology gives the demand for input <var>i</var>. Which formula is correct?</p>
-  <label class="opt"><input type="radio" name="q5" value="a"> <var>X</var><sub><var>i</var></sub> = <var>Q</var>&delta;<sub><var>i</var></sub><sup>&sigma;</sup>(<var>W</var><sub><var>i</var></sub>/<var>c</var>)<sup>&minus;&sigma;</sup></label>
-  <label class="opt"><input type="radio" name="q5" value="b"> <var>X</var><sub><var>i</var></sub> = <var>Q</var>&delta;<sub><var>i</var></sub><sup>&sigma;</sup>(<var>W</var><sub><var>i</var></sub>/<var>c</var>)<sup>+&sigma;</sup></label>
-  <label class="opt"><input type="radio" name="q5" value="c"> <var>X</var><sub><var>i</var></sub> = <var>Q</var>&delta;<sub><var>i</var></sub><sup>&sigma;</sup>(<var>W</var><sub><var>i</var></sub>/<var>W</var><sub><var>j</var></sub>)<sup>&minus;&sigma;</sup></label>
-  <label class="opt"><input type="radio" name="q5" value="d"> <var>X</var><sub><var>i</var></sub> = &delta;<sub><var>i</var></sub><var>Y</var>/<var>W</var><sub><var>i</var></sub></label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">Demand is proportional to output and decreasing in the input&rsquo;s price <em>relative to unit cost c</em> &mdash; not relative to another input&rsquo;s price. Option (d) is the Cobb-Douglas <em>consumer</em> demand. <span class="src">Handout #1, eq. (9); "Demand for factors and unit cost" slide.</span></div>
-</fieldset>
+<section class="q" id="q5">
+  <div class="num">5</div>
+  <p class="qtext">Cost minimization with CES technology gives the demand for input <math><mi>i</mi></math>. Which formula is correct?</p>
+  <label class="opt"><input type="radio" name="q5" value="a"><span class="box"></span><span><math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mi>Q</mi><msubsup><mi>&#948;</mi><mi>i</mi><mi>&#963;</mi></msubsup><msup><mrow><mo>(</mo><mfrac><msub><mi>W</mi><mi>i</mi></msub><mi>c</mi></mfrac><mo>)</mo></mrow><mrow><mo>&#8722;</mo><mi>&#963;</mi></mrow></msup></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q5" value="b"><span class="box"></span><span><math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mi>Q</mi><msubsup><mi>&#948;</mi><mi>i</mi><mi>&#963;</mi></msubsup><msup><mrow><mo>(</mo><mfrac><msub><mi>W</mi><mi>i</mi></msub><mi>c</mi></mfrac><mo>)</mo></mrow><mrow><mo>+</mo><mi>&#963;</mi></mrow></msup></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q5" value="c"><span class="box"></span><span><math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mi>Q</mi><msubsup><mi>&#948;</mi><mi>i</mi><mi>&#963;</mi></msubsup><msup><mrow><mo>(</mo><mfrac><msub><mi>W</mi><mi>i</mi></msub><msub><mi>W</mi><mi>j</mi></msub></mfrac><mo>)</mo></mrow><mrow><mo>&#8722;</mo><mi>&#963;</mi></mrow></msup></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q5" value="d"><span class="box"></span><span><math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>&#948;</mi><mi>i</mi></msub><mi>Y</mi></mrow><msub><mi>W</mi><mi>i</mi></msub></mfrac></math></span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">Demand rises proportionally with output and falls in the input&rsquo;s price <em>relative to unit cost</em> <math><mi>c</mi></math> — not relative to another input&rsquo;s price. The last option is the Cobb-Douglas <em>consumer</em> demand.
+    <span class="src">Handout #1, eq. (9); “Demand for factors and unit cost” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q6">
-  <legend>Question 6</legend>
+<section class="q" id="q6">
+  <div class="num">6</div>
   <p class="qtext">The unit cost of production under CES technology is:</p>
-  <label class="opt"><input type="radio" name="q6" value="a"> <var>c</var> = (&Sigma;<sub><var>i</var></sub> &delta;<sub><var>i</var></sub><sup>&sigma;</sup><var>W</var><sub><var>i</var></sub><sup>1&minus;&sigma;</sup>)<sup>1/(1&minus;&sigma;)</sup></label>
-  <label class="opt"><input type="radio" name="q6" value="b"> <var>c</var> = (&Sigma;<sub><var>i</var></sub> &delta;<sub><var>i</var></sub><sup>&sigma;</sup><var>W</var><sub><var>i</var></sub><sup>1&minus;&sigma;</sup>)<sup>1/(1+&sigma;)</sup></label>
-  <label class="opt"><input type="radio" name="q6" value="c"> <var>c</var> = &Sigma;<sub><var>i</var></sub> &delta;<sub><var>i</var></sub><var>W</var><sub><var>i</var></sub></label>
-  <label class="opt"><input type="radio" name="q6" value="d"> <var>c</var> = &Pi;<sub><var>i</var></sub> (<var>W</var><sub><var>i</var></sub>/&delta;<sub><var>i</var></sub>)<sup>&delta;<sub>i</sub></sup></label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">The CES unit-cost (price) index is <var>c</var> = (&Sigma; &delta;<sub><var>i</var></sub><sup>&sigma;</sup><var>W</var><sub><var>i</var></sub><sup>1&minus;&sigma;</sup>)<sup>1/(1&minus;&sigma;)</sup>; total cost is then <var>C</var> = <var>cQ</var>. <span class="src">Handout #1, eq. (10).</span></div>
-</fieldset>
+  <label class="opt"><input type="radio" name="q6" value="a"><span class="box"></span><span><math><mi>c</mi><mo>=</mo><msup><mrow><mo>(</mo><munder><mo>&#8721;</mo><mi>i</mi></munder><msubsup><mi>&#948;</mi><mi>i</mi><mi>&#963;</mi></msubsup><msubsup><mi>W</mi><mi>i</mi><mrow><mn>1</mn><mo>&#8722;</mo><mi>&#963;</mi></mrow></msubsup><mo>)</mo></mrow><mfrac><mn>1</mn><mrow><mn>1</mn><mo>&#8722;</mo><mi>&#963;</mi></mrow></mfrac></msup></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q6" value="b"><span class="box"></span><span><math><mi>c</mi><mo>=</mo><msup><mrow><mo>(</mo><munder><mo>&#8721;</mo><mi>i</mi></munder><msubsup><mi>&#948;</mi><mi>i</mi><mi>&#963;</mi></msubsup><msubsup><mi>W</mi><mi>i</mi><mrow><mn>1</mn><mo>&#8722;</mo><mi>&#963;</mi></mrow></msubsup><mo>)</mo></mrow><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>&#963;</mi></mrow></mfrac></msup></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q6" value="c"><span class="box"></span><span><math><mi>c</mi><mo>=</mo><munder><mo>&#8721;</mo><mi>i</mi></munder><msub><mi>&#948;</mi><mi>i</mi></msub><msub><mi>W</mi><mi>i</mi></msub></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q6" value="d"><span class="box"></span><span><math><mi>c</mi><mo>=</mo><munder><mo>&#8719;</mo><mi>i</mi></munder><msup><mrow><mo>(</mo><mfrac><msub><mi>W</mi><mi>i</mi></msub><msub><mi>&#948;</mi><mi>i</mi></msub></mfrac><mo>)</mo></mrow><msub><mi>&#948;</mi><mi>i</mi></msub></msup></math></span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">The CES unit-cost (price) index is the first expression, and total cost follows as <math><mi>C</mi><mo>=</mo><mi>c</mi><mi>Q</mi></math>.
+    <span class="src">Handout #1, eq. (10).</span></div>
+</section>
 
-<fieldset class="q" id="q7">
-  <legend>Question 7</legend>
-  <p class="qtext">With CES technology, total cost is <var>C</var> = <var>cQ</var>, so average cost is constant and does not depend on <var>Q</var>. This is because:</p>
-  <label class="opt"><input type="radio" name="q7" value="a"> The elasticity of substitution is constant along the isoquant</label>
-  <label class="opt"><input type="radio" name="q7" value="b"> Firms are assumed to be perfectly competitive</label>
-  <label class="opt"><input type="radio" name="q7" value="c"> The technology is homothetic with constant returns to scale, so unit cost depends only on input prices</label>
-  <label class="opt"><input type="radio" name="q7" value="d"> Output is fixed in the short run</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">Under CRS, scaling output scales all inputs proportionally at unchanged input mix, so cost per unit is unchanged &mdash; the answer to the slides&rsquo; query "why is average cost constant, shouldn&rsquo;t it be U-shaped?" <span class="src">Handout #1, eq. (7); "Demand for factors and unit cost" slide.</span></div>
-</fieldset>
+<section class="q" id="q7">
+  <div class="num">7</div>
+  <p class="qtext">With CES technology <math><mi>C</mi><mo>=</mo><mi>c</mi><mi>Q</mi></math>, so average cost is constant and independent of <math><mi>Q</mi></math>. This is because:</p>
+  <label class="opt"><input type="radio" name="q7" value="a"><span class="box"></span><span>The elasticity of substitution is constant along the isoquant</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q7" value="b"><span class="box"></span><span>Firms are assumed to be perfectly competitive</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q7" value="c"><span class="box"></span><span>The technology is homothetic with constant returns to scale, so unit cost depends only on input prices</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q7" value="d"><span class="box"></span><span>Output is fixed in the short run</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">Under constant returns, scaling output scales every input proportionally at an unchanged input mix, so cost per unit never moves — the answer to the slides&rsquo; query “why is average cost constant, shouldn&rsquo;t it be U-shaped?”
+    <span class="src">Handout #1, eq. (7); “Demand for factors and unit cost” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q8">
-  <legend>Question 8</legend>
+<section class="q" id="q8">
+  <div class="num">8</div>
   <p class="qtext">In the derivation of CES input demand, taking the <strong>ratio of two first-order conditions</strong> serves to:</p>
-  <label class="opt"><input type="radio" name="q8" value="a"> Eliminate the Lagrange multiplier &lambda;</label>
-  <label class="opt"><input type="radio" name="q8" value="b"> Eliminate the output level <var>Q</var></label>
-  <label class="opt"><input type="radio" name="q8" value="c"> Eliminate the input prices</label>
-  <label class="opt"><input type="radio" name="q8" value="d"> Impose constant returns to scale</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">&lambda; appears multiplicatively in every FOC, so dividing one FOC by another cancels it, leaving <var>W</var><sub><var>i</var></sub>/<var>W</var><sub><var>j</var></sub> = (&delta;<sub><var>i</var></sub>/&delta;<sub><var>j</var></sub>)(<var>X</var><sub><var>i</var></sub>/<var>X</var><sub><var>j</var></sub>)<sup>&minus;&rho;&minus;1</sup>. <span class="src">Handout #1, eq. (3).</span></div>
-</fieldset>
+  <label class="opt"><input type="radio" name="q8" value="a"><span class="box"></span><span>Eliminate the Lagrange multiplier <math><mi>&#955;</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q8" value="b"><span class="box"></span><span>Eliminate the output level <math><mi>Q</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q8" value="c"><span class="box"></span><span>Eliminate the input prices</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q8" value="d"><span class="box"></span><span>Impose constant returns to scale</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl"><math><mi>&#955;</mi></math> enters every first-order condition multiplicatively, so dividing one by another cancels it and leaves
+    <math display="block"><mfrac><msub><mi>W</mi><mi>i</mi></msub><msub><mi>W</mi><mi>j</mi></msub></mfrac><mo>=</mo><mfrac><msub><mi>&#948;</mi><mi>i</mi></msub><msub><mi>&#948;</mi><mi>j</mi></msub></mfrac><mfrac><msubsup><mi>X</mi><mi>i</mi><mrow><mo>&#8722;</mo><mi>&#961;</mi><mo>&#8722;</mo><mn>1</mn></mrow></msubsup><msubsup><mi>X</mi><mi>j</mi><mrow><mo>&#8722;</mo><mi>&#961;</mi><mo>&#8722;</mo><mn>1</mn></mrow></msubsup></mfrac></math>
+    <span class="src">Handout #1, eq. (3).</span></div>
+</section>
 
-<fieldset class="q" id="q9">
-  <legend>Question 9</legend>
-  <p class="qtext">The CES cost share of input <var>j</var> is <var>S</var><sub><var>j</var></sub> = &delta;<sub><var>j</var></sub><sup>&sigma;</sup><var>W</var><sub><var>j</var></sub><sup>1&minus;&sigma;</sup> / &Sigma;<sub><var>i</var></sub> &delta;<sub><var>i</var></sub><sup>&sigma;</sup><var>W</var><sub><var>i</var></sub><sup>1&minus;&sigma;</sup>. When &sigma; = 1 (Cobb-Douglas), the cost share of input <var>j</var> becomes:</p>
-  <label class="opt"><input type="radio" name="q9" value="a"> <var>W</var><sub><var>j</var></sub>/<var>c</var></label>
-  <label class="opt"><input type="radio" name="q9" value="b"> Exactly &delta;<sub><var>j</var></sub> &mdash; a constant, independent of prices</label>
-  <label class="opt"><input type="radio" name="q9" value="c"> Zero</label>
-  <label class="opt"><input type="radio" name="q9" value="d"> Still a function of all input prices</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">At &sigma; = 1 the price terms drop out (<var>W</var><sup>1&minus;&sigma;</sup> = <var>W</var><sup>0</sup> = 1) and &Sigma;&delta;<sub><var>i</var></sub> = 1, so <var>S</var><sub><var>j</var></sub> = &delta;<sub><var>j</var></sub>: constant cost shares are the Cobb-Douglas signature. <span class="src">Handout #1, "Cost share with &sigma;".</span></div>
-</fieldset>
+<section class="q" id="q9">
+  <div class="num">9</div>
+  <p class="qtext">The CES cost share of input <math><mi>j</mi></math> is
+    <math display="block"><msub><mi>S</mi><mi>j</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>&#948;</mi><mi>j</mi><mi>&#963;</mi></msubsup><msubsup><mi>W</mi><mi>j</mi><mrow><mn>1</mn><mo>&#8722;</mo><mi>&#963;</mi></mrow></msubsup></mrow><mrow><munder><mo>&#8721;</mo><mi>i</mi></munder><msubsup><mi>&#948;</mi><mi>i</mi><mi>&#963;</mi></msubsup><msubsup><mi>W</mi><mi>i</mi><mrow><mn>1</mn><mo>&#8722;</mo><mi>&#963;</mi></mrow></msubsup></mrow></mfrac></math>
+    When <math><mi>&#963;</mi><mo>=</mo><mn>1</mn></math> (Cobb-Douglas), the cost share becomes:</p>
+  <label class="opt"><input type="radio" name="q9" value="a"><span class="box"></span><span><math><msub><mi>W</mi><mi>j</mi></msub><mo>/</mo><mi>c</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q9" value="b"><span class="box"></span><span>Exactly <math><msub><mi>&#948;</mi><mi>j</mi></msub></math> — a constant, independent of prices</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q9" value="c"><span class="box"></span><span>Zero</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q9" value="d"><span class="box"></span><span>Still a function of all input prices</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">At <math><mi>&#963;</mi><mo>=</mo><mn>1</mn></math> every price term becomes <math><msup><mi>W</mi><mn>0</mn></msup><mo>=</mo><mn>1</mn></math> and <math><munder><mo>&#8721;</mo><mi>i</mi></munder><msub><mi>&#948;</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></math>, leaving <math><msub><mi>S</mi><mi>j</mi></msub><mo>=</mo><msub><mi>&#948;</mi><mi>j</mi></msub></math>. Constant cost shares are the Cobb-Douglas signature.
+    <span class="src">Handout #1, “Cost share with <math><mi>&#963;</mi></math>”.</span></div>
+</section>
 
-<fieldset class="q" id="q10">
-  <legend>Question 10</legend>
-  <p class="qtext">The nested production function <var>Q</var> = <var>f</var>(<var>L</var>, <var>K</var>) with composite labor <var>L</var> = <var>g</var>(<var>U</var>, <var>S</var>) can be solved as two separate cost-minimization problems because:</p>
-  <label class="opt"><input type="radio" name="q10" value="a"> The function is separable: <var>U</var> and <var>S</var> affect output only through the composite <var>L</var></label>
-  <label class="opt"><input type="radio" name="q10" value="b"> All inputs have the same price</label>
-  <label class="opt"><input type="radio" name="q10" value="c"> The cost function is linear in prices</label>
-  <label class="opt"><input type="radio" name="q10" value="d"> The two nests must have the same elasticity of substitution</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">Separability lets you first find the cheapest <var>U</var>,<var>S</var> mix for any <var>L</var>, then treat <var>L</var> as an ordinary input; the nests may have <em>different</em> elasticities. <span class="src">"Nested production function" and "Cost minimization with nested production function" slides.</span></div>
-</fieldset>
+<section class="q" id="q10">
+  <div class="num">10</div>
+  <p class="qtext">The nested production function <math><mi>Q</mi><mo>=</mo><mi>f</mi><mo>(</mo><mi>L</mi><mo>,</mo><mi>K</mi><mo>)</mo></math> with composite labor <math><mi>L</mi><mo>=</mo><mi>g</mi><mo>(</mo><mi>U</mi><mo>,</mo><mi>S</mi><mo>)</mo></math> can be solved as two separate cost-minimization problems because:</p>
+  <label class="opt"><input type="radio" name="q10" value="a"><span class="box"></span><span>The function is separable: <math><mi>U</mi></math> and <math><mi>S</mi></math> affect output only through the composite <math><mi>L</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q10" value="b"><span class="box"></span><span>All inputs have the same price</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q10" value="c"><span class="box"></span><span>The cost function is linear in prices</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q10" value="d"><span class="box"></span><span>The two nests must have the same elasticity of substitution</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">Separability lets you first find the cheapest <math><mi>U</mi></math>,&#8239;<math><mi>S</mi></math> mix for any <math><mi>L</mi></math>, then treat <math><mi>L</mi></math> as an ordinary input. The nests may carry <em>different</em> elasticities — that is the point of nesting.
+    <span class="src">“Nested production function” and “Cost minimization with nested production function” slides.</span></div>
+</section>
 
-<fieldset class="q" id="q11">
-  <legend>Question 11</legend>
-  <p class="qtext">In the upper-nest problem min <var>wL</var> + <var>rK</var>, the price <var>w</var> of composite labor is:</p>
-  <label class="opt"><input type="radio" name="q11" value="a"> The wage of unskilled labor</label>
-  <label class="opt"><input type="radio" name="q11" value="b"> The simple average of the skilled and unskilled wages</label>
-  <label class="opt"><input type="radio" name="q11" value="c"> An exogenous market wage set outside the model</label>
-  <label class="opt"><input type="radio" name="q11" value="d"> The CES unit-cost index of the lower nest, built from <var>w</var><sub><var>U</var></sub> and <var>w</var><sub><var>S</var></sub></label>
-  <p class="flag">Not answered.</p>
-  <div class="expl"><var>w</var> = (&delta;<sub><var>U</var></sub><sup>1/(1+&rho;<sub>L</sub>)</sup><var>w</var><sub><var>U</var></sub><sup>&rho;<sub>L</sub>/(1+&rho;<sub>L</sub>)</sup> + &delta;<sub><var>S</var></sub><sup>1/(1+&rho;<sub>L</sub>)</sup><var>w</var><sub><var>S</var></sub><sup>&rho;<sub>L</sub>/(1+&rho;<sub>L</sub>)</sup>)<sup>(1+&rho;<sub>L</sub>)/&rho;<sub>L</sub></sup> &mdash; the lower nest&rsquo;s unit cost carried up as the composite&rsquo;s price. <span class="src">"Solution to problem #1", eq. (3).</span></div>
-</fieldset>
+<section class="q" id="q11">
+  <div class="num">11</div>
+  <p class="qtext">In the upper-nest problem <math><munder><mo movablelimits="false">min</mo><mrow><mi>L</mi><mo>,</mo><mi>K</mi></mrow></munder><mi>w</mi><mi>L</mi><mo>+</mo><mi>r</mi><mi>K</mi></math>, the price <math><mi>w</mi></math> of composite labor is:</p>
+  <label class="opt"><input type="radio" name="q11" value="a"><span class="box"></span><span>The wage of unskilled labor</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q11" value="b"><span class="box"></span><span>The simple average of the skilled and unskilled wages</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q11" value="c"><span class="box"></span><span>An exogenous market wage set outside the model</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q11" value="d"><span class="box"></span><span>The CES unit-cost index of the lower nest, built from <math><msub><mi>w</mi><mi>U</mi></msub></math> and <math><msub><mi>w</mi><mi>S</mi></msub></math></span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">The lower nest&rsquo;s unit cost is carried up as the composite&rsquo;s price:
+    <math display="block"><mi>w</mi><mo>=</mo><msup><mrow><mo>(</mo><msubsup><mi>&#948;</mi><mi>U</mi><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msub><mi>&#961;</mi><mi>L</mi></msub></mrow></mfrac></msubsup><msubsup><mi>w</mi><mi>U</mi><mfrac><msub><mi>&#961;</mi><mi>L</mi></msub><mrow><mn>1</mn><mo>+</mo><msub><mi>&#961;</mi><mi>L</mi></msub></mrow></mfrac></msubsup><mo>+</mo><msubsup><mi>&#948;</mi><mi>S</mi><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msub><mi>&#961;</mi><mi>L</mi></msub></mrow></mfrac></msubsup><msubsup><mi>w</mi><mi>S</mi><mfrac><msub><mi>&#961;</mi><mi>L</mi></msub><mrow><mn>1</mn><mo>+</mo><msub><mi>&#961;</mi><mi>L</mi></msub></mrow></mfrac></msubsup><mo>)</mo></mrow><mfrac><mrow><mn>1</mn><mo>+</mo><msub><mi>&#961;</mi><mi>L</mi></msub></mrow><msub><mi>&#961;</mi><mi>L</mi></msub></mfrac></msup></math>
+    <span class="src">“Solution to problem #1”, eq. (3).</span></div>
+</section>
 
-<fieldset class="q" id="q12">
-  <legend>Question 12</legend>
-  <p class="qtext">Which of the following is <strong>NOT</strong> a property of the Cobb-Douglas demand system <var>X</var><sub><var>i</var></sub> = &alpha;<sub><var>i</var></sub><var>Y</var>/<var>P</var><sub><var>i</var></sub>?</p>
-  <label class="opt"><input type="radio" name="q12" value="a"> Unitary income elasticity</label>
-  <label class="opt"><input type="radio" name="q12" value="b"> Unitary own-price elasticity (in absolute value)</label>
-  <label class="opt"><input type="radio" name="q12" value="c"> Nonzero cross-price elasticities</label>
-  <label class="opt"><input type="radio" name="q12" value="d"> Constant budget shares</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">Cross-price elasticities are exactly <em>zero</em>: the demand for good <var>i</var> depends only on <var>Y</var> and its own price. That restrictiveness motivates Stone-Geary. <span class="src">"Cobb-Douglas Demand System" slide.</span></div>
-</fieldset>
+<section class="q" id="q12">
+  <div class="num">12</div>
+  <p class="qtext">Which of the following is <strong>NOT</strong> a property of the Cobb-Douglas demand system <math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><msub><mi>&#945;</mi><mi>i</mi></msub><mfrac><mi>Y</mi><msub><mi>P</mi><mi>i</mi></msub></mfrac></math>?</p>
+  <label class="opt"><input type="radio" name="q12" value="a"><span class="box"></span><span>Unitary income elasticity</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q12" value="b"><span class="box"></span><span>Unitary own-price elasticity (in absolute value)</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q12" value="c"><span class="box"></span><span>Nonzero cross-price elasticities</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q12" value="d"><span class="box"></span><span>Constant budget shares</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">Cross-price elasticities are exactly <em>zero</em>: demand for good <math><mi>i</mi></math> depends only on income and its own price. That restrictiveness is what motivates Stone-Geary.
+    <span class="src">“Cobb-Douglas Demand System” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q13">
-  <legend>Question 13</legend>
-  <p class="qtext">In the Stone-Geary utility function <var>U</var> = &Pi;<sub><var>i</var></sub>(<var>X</var><sub><var>i</var></sub> &minus; &gamma;<sub><var>i</var></sub>)<sup>&beta;<sub>i</sub></sup>, the parameter &gamma;<sub><var>i</var></sub> is:</p>
-  <label class="opt"><input type="radio" name="q13" value="a"> The marginal budget share of good <var>i</var></label>
-  <label class="opt"><input type="radio" name="q13" value="b"> The subsistence (minimum) consumption of good <var>i</var></label>
-  <label class="opt"><input type="radio" name="q13" value="c"> The income elasticity of good <var>i</var></label>
-  <label class="opt"><input type="radio" name="q13" value="d"> The Frisch parameter</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">&gamma;<sub><var>i</var></sub> is subsistence consumption; <var>X</var><sub><var>i</var></sub> &minus; &gamma;<sub><var>i</var></sub> is supernumerary consumption, and &beta;<sub><var>i</var></sub> (which sums to 1) is the <em>marginal</em> budget share. <span class="src">"Stone-Geary utility function" slide; Handout #2.</span></div>
-</fieldset>
+<section class="q" id="q13">
+  <div class="num">13</div>
+  <p class="qtext">In the Stone-Geary utility function
+    <math><mi>U</mi><mo>=</mo><munder><mo>&#8719;</mo><mi>i</mi></munder><msup><mrow><mo>(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>&#8722;</mo><msub><mi>&#947;</mi><mi>i</mi></msub><mo>)</mo></mrow><msub><mi>&#946;</mi><mi>i</mi></msub></msup></math>,
+    the parameter <math><msub><mi>&#947;</mi><mi>i</mi></msub></math> is:</p>
+  <label class="opt"><input type="radio" name="q13" value="a"><span class="box"></span><span>The marginal budget share of good <math><mi>i</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q13" value="b"><span class="box"></span><span>The subsistence (minimum) consumption of good <math><mi>i</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q13" value="c"><span class="box"></span><span>The income elasticity of good <math><mi>i</mi></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q13" value="d"><span class="box"></span><span>The Frisch parameter</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl"><math><msub><mi>&#947;</mi><mi>i</mi></msub></math> is subsistence consumption and <math><msub><mi>X</mi><mi>i</mi></msub><mo>&#8722;</mo><msub><mi>&#947;</mi><mi>i</mi></msub></math> is supernumerary consumption; <math><msub><mi>&#946;</mi><mi>i</mi></msub></math>, which sums to one, is the <em>marginal</em> budget share.
+    <span class="src">“Stone-Geary utility function” slide; Handout #2.</span></div>
+</section>
 
-<fieldset class="q" id="q14">
-  <legend>Question 14</legend>
-  <p class="qtext">Under the LES, the income elasticity of good <var>i</var> is &eta;<sub><var>i</var></sub> = &beta;<sub><var>i</var></sub>/<var>w</var><sub><var>i</var></sub>, where <var>w</var><sub><var>i</var></sub> is its budget share. If &beta;<sub><var>i</var></sub> = 0.1 and <var>w</var><sub><var>i</var></sub> = 0.25, good <var>i</var> is:</p>
-  <label class="opt"><input type="radio" name="q14" value="a"> A luxury, with income elasticity 2.5</label>
-  <label class="opt"><input type="radio" name="q14" value="b"> A necessity, with income elasticity 0.4</label>
-  <label class="opt"><input type="radio" name="q14" value="c"> An inferior good, with income elasticity &minus;0.4</label>
-  <label class="opt"><input type="radio" name="q14" value="d"> Income-neutral, with income elasticity 1.0</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">&eta; = 0.1/0.25 = 0.4 &lt; 1: a necessity. Its budget share falls as income rises &mdash; the Engel behavior Cobb-Douglas cannot produce. <span class="src">"Some features of the LES demand function" slide.</span></div>
-</fieldset>
+<section class="q" id="q14">
+  <div class="num">14</div>
+  <p class="qtext">Under the LES the income elasticity of good <math><mi>i</mi></math> is <math><msub><mi>&#951;</mi><mi>i</mi></msub><mo>=</mo><msub><mi>&#946;</mi><mi>i</mi></msub><mo>/</mo><msub><mi>w</mi><mi>i</mi></msub></math>, where <math><msub><mi>w</mi><mi>i</mi></msub></math> is its budget share. If <math><msub><mi>&#946;</mi><mi>i</mi></msub><mo>=</mo><mn>0.1</mn></math> and <math><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><mn>0.25</mn></math>, good <math><mi>i</mi></math> is:</p>
+  <label class="opt"><input type="radio" name="q14" value="a"><span class="box"></span><span>A luxury, with income elasticity 2.5</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q14" value="b"><span class="box"></span><span>A necessity, with income elasticity 0.4</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q14" value="c"><span class="box"></span><span>An inferior good, with income elasticity &minus;0.4</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q14" value="d"><span class="box"></span><span>Income-neutral, with income elasticity 1.0</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl"><math><msub><mi>&#951;</mi><mi>i</mi></msub><mo>=</mo><mn>0.1</mn><mo>/</mo><mn>0.25</mn><mo>=</mo><mn>0.4</mn><mo>&lt;</mo><mn>1</mn></math>: a necessity, whose budget share falls as income rises — Engel behaviour that Cobb-Douglas cannot produce.
+    <span class="src">“Some features of the LES demand function” slide.</span></div>
+</section>
 
-<fieldset class="q" id="q15">
-  <legend>Question 15</legend>
-  <p class="qtext">If every subsistence parameter is zero (&gamma;<sub><var>i</var></sub> = 0 for all <var>i</var>), the LES demand system <var>X</var><sub><var>i</var></sub> = &gamma;<sub><var>i</var></sub> + (&beta;<sub><var>i</var></sub>/<var>P</var><sub><var>i</var></sub>)(<var>Y</var> &minus; &Sigma;<sub><var>j</var></sub><var>P</var><sub><var>j</var></sub>&gamma;<sub><var>j</var></sub>) collapses to:</p>
-  <label class="opt"><input type="radio" name="q15" value="a"> The Leontief demand system</label>
-  <label class="opt"><input type="radio" name="q15" value="b"> The CES demand system</label>
-  <label class="opt"><input type="radio" name="q15" value="c"> The Cobb-Douglas demand system <var>X</var><sub><var>i</var></sub> = &beta;<sub><var>i</var></sub><var>Y</var>/<var>P</var><sub><var>i</var></sub></label>
-  <label class="opt"><input type="radio" name="q15" value="d"> An undefined system</label>
-  <p class="flag">Not answered.</p>
-  <div class="expl">With all &gamma; = 0, supernumerary income equals <var>Y</var> and <var>X</var><sub><var>i</var></sub> = &beta;<sub><var>i</var></sub><var>Y</var>/<var>P</var><sub><var>i</var></sub> &mdash; Cobb-Douglas, with &beta; as constant budget shares. <span class="src">"Stone-Geary utility function" slide; Handout #2.</span></div>
-</fieldset>
+<section class="q" id="q15">
+  <div class="num">15</div>
+  <p class="qtext">If every subsistence parameter is zero (<math><msub><mi>&#947;</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn></math> for all <math><mi>i</mi></math>), the LES demand system
+    <math display="block"><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><msub><mi>&#947;</mi><mi>i</mi></msub><mo>+</mo><mfrac><msub><mi>&#946;</mi><mi>i</mi></msub><msub><mi>P</mi><mi>i</mi></msub></mfrac><mrow><mo>(</mo><mi>Y</mi><mo>&#8722;</mo><munder><mo>&#8721;</mo><mi>j</mi></munder><msub><mi>P</mi><mi>j</mi></msub><msub><mi>&#947;</mi><mi>j</mi></msub><mo>)</mo></mrow></math>
+    collapses to:</p>
+  <label class="opt"><input type="radio" name="q15" value="a"><span class="box"></span><span>The Leontief demand system</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q15" value="b"><span class="box"></span><span>The CES demand system</span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q15" value="c"><span class="box"></span><span>The Cobb-Douglas demand system <math><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><msub><mi>&#946;</mi><mi>i</mi></msub><mfrac><mi>Y</mi><msub><mi>P</mi><mi>i</mi></msub></mfrac></math></span><span class="tick"></span></label>
+  <label class="opt"><input type="radio" name="q15" value="d"><span class="box"></span><span>An undefined system</span><span class="tick"></span></label>
+  <p class="flag">Not answered</p>
+  <div class="expl">With all <math><mi>&#947;</mi></math> zero, supernumerary income is simply <math><mi>Y</mi></math>, and <math><msub><mi>&#946;</mi><mi>i</mi></msub></math> becomes a constant budget share.
+    <span class="src">“Stone-Geary utility function” slide; Handout #2.</span></div>
+</section>
 
 <div id="submitrow">
   <button id="submitbtn" type="button" onclick="grade(false)">Submit answers</button>
+  <p id="counter">0 of 15 answered</p>
 </div>
 
 </form>
+</main>
 
-</div>
+<footer>
+  <a href="../index.html">&larr; Kembali ke bahan pelatihan</a>
+</footer>
 
 <script>
 var KEY = { q1:'b', q2:'c', q3:'a', q4:'b', q5:'a', q6:'a', q7:'c', q8:'a',
             q9:'b', q10:'a', q11:'d', q12:'c', q13:'b', q14:'b', q15:'c' };
+var TOTAL = 15;
 var graded = false;
 var remaining = 20 * 60;
 
+var clockEl = document.getElementById('clock');
 var timerEl = document.getElementById('timer');
+var barEl   = document.getElementById('progressbar');
+var countEl = document.getElementById('counter');
+
 var tick = setInterval(function () {
   remaining--;
   var m = Math.floor(remaining / 60), s = remaining % 60;
-  timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  clockEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
   if (remaining <= 120) timerEl.classList.add('low');
   if (remaining <= 0) { clearInterval(tick); grade(true); }
 }, 1000);
+
+document.getElementById('exam').addEventListener('change', function (e) {
+  if (graded || e.target.type !== 'radio') return;
+  document.getElementById(e.target.name).classList.add('answered');
+  var n = document.querySelectorAll('.q.answered').length;
+  barEl.style.width = (n / TOTAL * 100) + '%';
+  countEl.textContent = n + ' of ' + TOTAL + ' answered';
+});
 
 function grade(timedOut) {
   if (graded) return;
@@ -316,7 +565,10 @@ function grade(timedOut) {
     for (var i = 0; i < opts.length; i++) {
       var inp = opts[i].querySelector('input');
       inp.disabled = true;
-      if (inp.value === KEY[q]) opts[i].classList.add('right');
+      if (inp.value === KEY[q]) {
+        opts[i].classList.add('right');
+        opts[i].querySelector('.tick').textContent = 'correct';
+      }
     }
     if (!chosen) {
       unanswered++;
@@ -327,27 +579,40 @@ function grade(timedOut) {
       card.classList.add('correct');
     } else {
       card.classList.add('incorrect');
-      chosen.closest('label').classList.add('chosen-wrong');
+      var lab = chosen.parentNode;
+      lab.classList.add('chosen-wrong');
+      lab.querySelector('.tick').textContent = 'your answer';
     }
     card.classList.add('graded');
   }
 
   document.getElementById('submitbtn').disabled = true;
-  timerEl.textContent = timedOut ? "Time's up" : 'Done';
+  countEl.textContent = TOTAL + ' of ' + TOTAL + ' reviewed';
+  barEl.style.width = '100%';
+  clockEl.textContent = timedOut ? "Time's up" : 'Submitted';
+  timerEl.classList.remove('low');
+  timerEl.classList.add('done');
 
-  var verdict;
-  if (score >= 13)      verdict = 'Excellent — you clearly worked through the materials.';
-  else if (score >= 10) verdict = 'Good — review the questions marked in red.';
-  else if (score >= 7)  verdict = 'Fair — re-read the handouts, especially the derivations.';
-  else                  verdict = 'Please re-read the materials before the next session.';
+  var title, text;
+  if (score >= 13)      { title = 'Excellent'; text = 'You clearly worked through the materials.'; }
+  else if (score >= 10) { title = 'Good';      text = 'Review the questions marked in red.'; }
+  else if (score >= 7)  { title = 'Fair';      text = 'Re-read the handouts, especially the derivations.'; }
+  else                  { title = 'Needs work';text = 'Please re-read the materials before the next session.'; }
   if (timedOut && unanswered > 0)
-    verdict += ' Time ran out with ' + unanswered + ' question(s) unanswered.';
+    text += ' Time ran out with ' + unanswered + ' question' + (unanswered > 1 ? 's' : '') + ' unanswered.';
+
+  document.getElementById('verdict-title').textContent = title;
+  document.getElementById('verdict-text').textContent = text;
+  document.getElementById('ringnum').textContent = score;
 
   var res = document.getElementById('result');
-  res.querySelector('.score').textContent = 'Score: ' + score + ' / 15';
-  res.querySelector('.verdict').textContent = verdict;
-  res.style.display = 'block';
-  res.scrollIntoView({ behavior: 'smooth' });
+  res.classList.add('show');
+  var C = 2 * Math.PI * 40;
+  var fg = document.getElementById('ringfg');
+  fg.setAttribute('stroke-dasharray', C);
+  fg.setAttribute('stroke-dashoffset', C);
+  setTimeout(function () { fg.setAttribute('stroke-dashoffset', C * (1 - score / TOTAL)); }, 60);
+  res.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 </script>
 </body>
